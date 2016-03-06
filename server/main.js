@@ -9,10 +9,15 @@ import _debug from 'debug'
 import config from '../config'
 import webpackDevMiddleware from './middleware/webpack-dev'
 import webpackHMRMiddleware from './middleware/webpack-hmr'
+import init from './service'
+import router from './router'
 
 const debug = _debug('app:server')
 const paths = config.utils_paths
 const app = new Koa()
+
+init()
+app.use(router.routes())
 
 // Enable koa-proxy if it has been enabled in the config.
 if (config.proxy && config.proxy.enabled) {
