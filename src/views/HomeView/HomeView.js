@@ -12,6 +12,7 @@ import { Button } from 'antd'
 // NOTE: You can run `npm run flow:check` to check for any errors in your
 // code, or `npm i -g flow-bin` to have access to the binary globally.
 // Sorry Windows users :(.
+// optional property use ?optProp: type
 type Props = {
   counter: number,
   doubleAsync: Function,
@@ -34,6 +35,7 @@ export class HomeView extends React.Component<void, Props, void> {
         <Button type='primary' className={classes['button']}>主按钮</Button>
         <Button type='ghost' className={classes['button']}>幽灵按钮</Button>
         <Button type='dashed' className={classes['button']}>虚线按钮</Button>
+        hello
       </div>
     )
   }
