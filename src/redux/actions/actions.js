@@ -1,7 +1,8 @@
 import fetch from 'isomorphic-fetch'
 
+export const REQUEST_COUNT = 'REQUEST_COUNT'
+export const RECEIVE_COUNT = 'RECEIVE_COUNT'
 export const REQUEST_POSTS = 'REQUEST_POSTS'
-export const COUNT_ROBOTS = 'COUNT_ROBOTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
 export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT'
@@ -27,6 +28,13 @@ function requestPosts (subreddit) {
   }
 }
 
+function requestCount (countItem) {
+  return {
+    type: REQUEST_COUNT,
+    countItem
+  }
+}
+
 function receivePosts (subreddit, json) {
   return {
     type: RECEIVE_POSTS,
@@ -36,12 +44,49 @@ function receivePosts (subreddit, json) {
   }
 }
 
+function receiveCount (countItem, json) {
+  return {
+    type: RECEIVE_COUNT,
+    countItem,
+    count: json.total,
+    receivedAt: Date.now()
+  }
+}
+
+function fetchCounts (countItem) {
+  return (dispatch) => {
+    dispatch(requestCount(countItem))
+    return fetch(`http://localhost:3010/api/v1/${countItem}/count`)
+      .then((req) => req.json())
+      .then((json) => dispatch(receiveCount(countItem, json)))
+  }
+}
+
 function fetchPosts (subreddit) {
   return (dispatch) => {
     dispatch(requestPosts(subreddit))
     return fetch(`http://www.reddit.com/r/${subreddit}.json`)
       .then((req) => req.json())
       .then((json) => dispatch(receivePosts(subreddit, json)))
+  }
+}
+
+function shouldFetchCount (state, countItem) {
+  const countInfo = state.postsApi[countItem]
+  if (!countInfo) {
+    return true
+  } else if (countInfo.isFetching) {
+    return false
+  } else {
+    return countInfo.didInvalidate
+  }
+}
+
+export function fetchCountIfNeeded (countItem) {
+  return (dispatch, getState) => {
+    if (shouldFetchCount(getState(), countItem)) {
+      return dispatch(fetchCounts(countItem))
+    }
   }
 }
 

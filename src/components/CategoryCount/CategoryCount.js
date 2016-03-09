@@ -10,7 +10,7 @@ export class CategoryCount extends React.Component {
   render () {
     return (
       <div>
-        <div>categories: </div><div>this.props.count</div>
+        <div>categories: </div><div>{this.props.count}</div>
       </div>
     )
   }

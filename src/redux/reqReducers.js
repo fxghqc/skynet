@@ -1,38 +1,29 @@
-import { combineReducers } from 'redux'
+// import { combineReducers } from 'redux'
 import {
-  SELECT_SUBREDDIT, INVALIDATE_SUBREDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
+  INVALIDATE_SUBREDDIT,
+  RECEIVE_COUNT, REQUEST_COUNT
 } from './actions/actions'
 
-function selectedSubreddit (state = 'reactjs', action) {
-  switch (action.type) {
-    case SELECT_SUBREDDIT:
-      return action.subreddit
-    default:
-      return state
-  }
-}
-
-function posts (state = {
+function apis (state = {
   isFetching: false,
   didInvalidate: false,
-  items: []
+  count: null
 }, action) {
   switch (action.type) {
     case INVALIDATE_SUBREDDIT:
       return Object.assign({}, state, {
         didInvalidate: true
       })
-    case REQUEST_POSTS:
+    case REQUEST_COUNT:
       return Object.assign({}, state, {
         isFetching: true,
         didInvalidate: false
       })
-    case RECEIVE_POSTS:
+    case RECEIVE_COUNT:
       return Object.assign({}, state, {
         isFetching: false,
         didInvalidate: false,
-        items: action.posts,
+        count: action.count,
         lastUpdated: action.receivedAt
       })
     default:
@@ -40,22 +31,24 @@ function posts (state = {
   }
 }
 
-function postsBySubreddit (state = { }, action) {
+function postsApi (state = { }, action) {
   switch (action.type) {
     case INVALIDATE_SUBREDDIT:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
-      return Object.assign({}, state, {
-        [action.subreddit]: posts(state[action.subreddit], action)
+    case RECEIVE_COUNT:
+    case REQUEST_COUNT:
+      console.log(action)
+      let newObj = Object.assign({}, state, {
+        [action.countItem]: apis(state[action.countItem], action)
       })
+      console.log(newObj)
+      return newObj
     default:
       return state
   }
 }
 
-const rootReducer = combineReducers({
-  postsBySubreddit,
-  selectedSubreddit
-})
+// const rootReducer = combineReducers({
+//   postsApi
+// })
 
-export default rootReducer
+export default postsApi

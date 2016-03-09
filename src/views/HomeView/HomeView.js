@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { increment, doubleAsync } from '../../redux/modules/counter'
 import classes from './HomeView.scss'
+import RobotCountBoxContainer from 'containers/RobotCountBoxContainer'
 import { Button } from 'antd'
 
 // We can use Flow (http://flowtype.org/) to type our component's props
@@ -35,7 +36,7 @@ export class HomeView extends React.Component<void, Props, void> {
         <Button type='primary' className={classes['button']}>主按钮</Button>
         <Button type='ghost' className={classes['button']}>幽灵按钮</Button>
         <Button type='dashed' className={classes['button']}>虚线按钮</Button>
-        hello
+        <RobotCountBoxContainer/>
       </div>
     )
   }

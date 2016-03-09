@@ -12,7 +12,7 @@ let router = new Router({
 })
 let koaBody = new KoaBody({ multipart: true })
 
-let connection = null;
+let connection = null
 
 r.connect(config).then((conn) => {
   connection = conn
@@ -31,7 +31,21 @@ router
     // .finally(next);
     return r.table(robotTable).run(connection).then((cursor) => {
       return cursor.toArray()
-    }).then((result) => ctx.body = result)
+    }).then((result) => {
+      ctx.body = result
+    })
+  })
+  .get('/robots/count', (ctx) => {
+    return r.table(robotTable).count().run(connection).then((count) => {
+      ctx.body = { total: count }
+    })
+  })
+  .get('/category/count', (ctx) => {
+    return r.table(robotTable).group('type').count().run(connection).then((cursor) => {
+      return cursor.toArray()
+    }).then((result) => {
+      ctx.body = { total: result.length }
+    })
   })
   .post('/robots', koaBody, (ctx) => {
     let newLang = ctx.request.body
@@ -48,24 +62,24 @@ router
     return promise
   })
   .put('/robots/:id', koaBody, (ctx) => {
-    var lang = ctx.request.body;
-    var id = ctx.params.id;
+    var lang = ctx.request.body
+    var id = ctx.params.id
     var promise = r.table(robotTable).get(id).update(lang, {returnChanges: true}).run(connection).then((result) => {
       if (result.unchanged === 1) {
-        ctx.body = lang;
+        ctx.body = lang
       } else {
-        ctx.body = result.changes[0].new_val;
+        ctx.body = result.changes[0].new_val
       }
     })
 
     return promise
   })
   .del('/robots/:id', (ctx) => {
-   let id = ctx.params.id;
-   let promise = r.table(robotTable).get(id).delete().run(connection).then(() => {
-     ctx.body = ''
-   })
-   return promise;
+    let id = ctx.params.id
+    let promise = r.table(robotTable).get(id).delete().run(connection).then(() => {
+      ctx.body = ''
+    })
+    return promise
   })
 
-export default router;
+export default router

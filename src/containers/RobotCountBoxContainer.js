@@ -1,51 +1,69 @@
 import React from 'react'
 import { connect } from 'react-redux'
 // import { bindActionCreators } from 'redux'
-import { fetchPostsIfNeeded } from '../redux/actions'
-import RobotCountBox from 'components/RobotCountBox'
+import { fetchCountIfNeeded } from 'redux/actions/actions'
+import RobotCountBox from 'components/RobotCountBox/RobotCountBox'
 
 type Props = {
   dispatch: Function,
-  selectedSubreddit: String
+  robots: Object,
+  category: Object
 }
 export class RobotCountBoxContainer extends React.Component {
   componentDidMount () {
-    const { dispatch, selectedSubreddit } = this.props
-    dispatch(fetchPostsIfNeeded(selectedSubreddit))
+    const { dispatch } = this.props
+    dispatch(fetchCountIfNeeded('robots'))
+    dispatch(fetchCountIfNeeded('category'))
   }
 
   props: Props;
 
   render () {
     return (
-      <RobotCountBox />
+      <RobotCountBox robots={this.props.robots} category={this.props.category} />
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  const { selectedSubreddit, postsBySubreddit } = state
+  const { postsApi } = state
   const {
-    isFetching,
-    lastUpdated,
-    items: posts
-  } = postsBySubreddit[selectedSubreddit] || {
+    isFetching: isFetchingRobotsCount,
+    lastUpdated: robotsLastUpdated,
+    count: robotsCount
+  } = postsApi['robots'] || {
     isFetching: true,
-    items: []
+    count: null
+  }
+
+  const {
+    isFetching: isFetchingCateCount,
+    lastUpdated: cateLastUpdated,
+    count: cateCount
+  } = postsApi['category'] || {
+    isFetching: true,
+    count: null
   }
 
   return {
-    selectedSubreddit,
-    posts,
-    isFetching,
-    lastUpdated
+    robots: {
+      isFetching: isFetchingRobotsCount,
+      lastUpdated: robotsLastUpdated,
+      count: robotsCount
+    },
+    category: {
+      isFetching: isFetchingCateCount,
+      lastUpdated: cateLastUpdated,
+      count: cateCount
+    }
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return {}
-}
+
+// const mapDispatchToProps = (dispatch) => {
+//   return { }
+// }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
+  // mapDispatchToProps
 )(RobotCountBoxContainer)

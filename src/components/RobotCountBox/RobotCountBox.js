@@ -1,10 +1,10 @@
 import React from 'react'
-import RobotsCount from './RobotsCount'
-import CategoryCount from './CategoryCount'
+import RobotsCount from '../RobotsCount/RobotsCount'
+import CategoryCount from '../CategoryCount/CategoryCount'
 
 type Props = {
-  robots: number,
-  categories: number
+  robots: Object,
+  category: Object
 }
 
 export class RobotCountBox extends React.Component {
@@ -13,9 +13,9 @@ export class RobotCountBox extends React.Component {
   render () {
     return (
       <div>
-        <RobotsCount count={this.props.robots} />
+        <RobotsCount count={this.props.robots.count} />
         <div className='separator' />
-        <CategoryCount count={this.props.categories} />
+        <CategoryCount count={this.props.category.count} />
       </div>
     )
   }
