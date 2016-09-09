@@ -2,13 +2,15 @@ import Router from 'koa-router'
 import r from 'rethinkdb'
 import KoaBody from 'koa-body'
 import serverConfig from './config'
+import * as dp from './data/dataPoints'
+import * as dr from './data/dataRows'
 
 // let { ['rethinkdb'] : config, ['table'] : robotTable } = serverConfig
 let config = serverConfig.rethinkdb
 let robotTable = serverConfig.table
 
 let router = new Router({
-  prefix: '/api/v1'
+  prefix: '/data-service/v3'
 })
 let koaBody = new KoaBody({ multipart: true })
 
@@ -81,5 +83,7 @@ router
     })
     return promise
   })
+  .get('/data-points', dp.one)
+  .get('/data-rows', dr.list)
 
 export default router
